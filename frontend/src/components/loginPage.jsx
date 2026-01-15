@@ -22,7 +22,7 @@ export default function LoginPage({current}) {
 
     return (
         
-            <div className="container">
+            <div className="authcontainer">
                 <div className="title">Login</div>
                 <form onSubmit={handleSubmit}>
                     <div className="inputs">

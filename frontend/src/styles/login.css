@@ -1,16 +1,18 @@
 body{
-    background: linear-gradient(to right, #667eea, #764ba2);
+    /* background: linear-gradient(to right, #667eea, #764ba2); */
+    
 }
 
 
 
-.container{
+.authcontainer{
     display: flex;
     flex-direction: column;
-    background-color: white;
+    
     margin: 5px;
     width: 400px;
     height: 500px;
+    background-color: #1A1327;
     
 }
 
@@ -49,7 +51,7 @@ body{
 
 .submit-button{
     margin-top: 80px;
-    
+    margin-bottom: 10px;
 }
 
 .submit-button button{
@@ -63,17 +65,17 @@ body{
 }
 
 .forgot-pass{
-    color: black;
+    color: white;
 }
 
 
 
 .signup-prompt{
-    color: black;
+    color: white;
 }
 
 .signup-prompt button{
-    background-color: white;
-    color : black;
+    
+    color : white;
     border :none;
 }
