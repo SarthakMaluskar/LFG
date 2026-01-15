@@ -1,0 +1,33 @@
+
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import './App.css'
+import LoginPage from './loginPage.jsx';
+
+function App() {
+  const [users, setUsers] = useState([]);   // store data from backend
+
+  const fetchAPI = async () => {
+    const res = await axios.get("http://localhost:5000/api");
+    console.log(res.data.users);
+    setUsers(res.data.users);               // update state
+  }
+
+  useEffect(() => {
+    fetchAPI();
+  }, []);
+
+  return (
+    <>
+      <h1>LFG-Play Together</h1>
+      <LoginPage/>
+
+      {users.map((user, index) => (
+        <p key={index}>{user}</p>
+      ))}
+
+    </>
+  );
+}
+
+export default App;
