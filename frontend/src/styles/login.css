@@ -40,13 +40,19 @@ body{
 }
 
 .input input{
+    outline: none;
     margin-top: 10px;
     margin-right: 80px;
     margin-bottom: 9px;
     font-size: large;
     background-color: grey;
     border:none;
+    color: white;
     
+}
+
+.input input::placeholder{
+    color: white
 }
 
 .submit-button{

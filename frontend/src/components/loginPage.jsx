@@ -1,23 +1,31 @@
 import { Fragment, useEffect, useState } from 'react'
 import axios from 'axios';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/login.css"
 import username_img from '../assets/user.png'
 import pass_img from '../assets/pass.png'
+
 export default function LoginPage({current}) {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const navigate = useNavigate();
+    const handleSubmit =async (e) => {
 
-        axios.post("http://localhost:5000/api/login", {
+        try{
+             e.preventDefault();
+
+        await axios.post("http://localhost:5000/api/login", {
             username: username,
             password: password
         }, { withCredentials: true })
         setUsername("");
         setPassword("");
-
+        navigate('/main')
+        }catch{
+            console.log("wrong username or password");
+        }
+       
     }
 
     return (
@@ -46,6 +54,5 @@ export default function LoginPage({current}) {
                 <div className="signup-prompt">Dont have an account? <button onClick={current} className="signup-button">Signup</button></div>
             </div>
 
-        
     );
 }

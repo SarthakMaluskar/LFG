@@ -10,20 +10,19 @@ const User = require('./models/users')
 const Post = require('./models/posts')
 const jwt = require('jsonwebtoken')
 const cookieParser = require("cookie-parser");
-
+const bcrypt = require('bcrypt');
 
 //all func imports
 
 const requireAuth = require("./middleware/authMiddleware");
 
 // all app.use
-app.use(cookieParser());
-
 app.use(cors({
     origin: "http://localhost:5173",
     credentials : true
 }));
 app.use(express.json());
+app.use(cookieParser());
 
 
 
@@ -52,24 +51,44 @@ app.post('/api/login', async (req, res) => {
     return res.status(401).json({ msg: "Invalid credentials" });
     }
 
-    if(password == user.password){
-        console.log("logged in")
-    }
     //user creds checked
-
+    const isMatch = await bcrypt.compare(password,user.password);
+    if(!isMatch){
+        return res.status(401).json({msg : "wrong password"})
+    }
+    
+    //we create a token and create a cookieeeeeeeeeee lets gooooo
     const token = jwt.sign({userId : user._id}, process.env.JWT_SECRET, {expiresIn : "7d"});
     
-    res.cookie("token", token, {httpOnly : true, sameSite : "strict"});
-    res.json({succress : true})
+    res.cookie("token", token, {httpOnly : true, sameSite : "lax", maxAge: 7 * 24 * 60 * 60 * 1000});
+    res.json({success : true})
 })
 
 app.post('/api/signup', async (req, res) => {
-    const { username, password } = req.body;
-    const newUser = new User({
+    const { username, password,email } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("hello world")
+    try{
+        const newUser = new User({
+        email : email,
         username: username,
-        password: password
+        password: hashedPassword
     })
     const savedUser = await newUser.save()
+
+    const token = jwt.sign({userId : savedUser._id}, process.env.JWT_SECRET, {expiresIn : "7d"});
+    console.log("token generated", token)
+    res.cookie("token", token, {httpOnly : true, sameSite : "lax", maxAge: 7 * 24 * 60 * 60 * 1000});
+   console.log("res.cookie at /signup", res.cookie);
+    
+    return res.status(200).json({isSignedIn : true});
+    }catch(err){
+        console.log(err);
+        return res.status(401).json({isSignedIn : false})
+    }
+    
+    
 })
 
 app.get('/api/posts', async (req, res) => {
@@ -118,4 +137,13 @@ app.delete('/api/posts/:id', requireAuth ,async (req,res)=>{
       postId,
     });
 
+})
+
+app.get('/api/me', (req,res)=>{
+    const token = req.cookies.token;
+    console.log(req.cookie)
+    console.log("/me func call",token)
+    if(!token){
+        return res.status(401).json({authenticated : false});
+    }
 })

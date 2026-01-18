@@ -1,7 +1,11 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
+
 function MainPage() {
+
+    const navigate = useNavigate();
 
     const getPosts = async () => {
         const posts = await axios.get("http://localhost:5000/api/posts", {
@@ -10,7 +14,7 @@ function MainPage() {
             }
         });
          setPosts(posts.data);
-         
+         console.log("got posts");
     }
 
     const deletePost = async(id) =>{
@@ -22,14 +26,40 @@ function MainPage() {
     const [selectedGame, setSelectedGame] = useState("");
 
     useEffect(() => {
-        getPosts();
-    }, [selectedGame,gotPosts])
+        const checkAuth = async() =>{
 
+            try{
+                const res = await axios.get("http://localhost:5000/api/me", {
+                withCredentials : true
+            })
+
+            if(!res.data.authenticated){
+                navigate('/');
+                console.log('login to continue');
+            }
+            }catch(err){
+                navigate('/');
+                console.log(err);
+            }
+            
+        }
+
+        checkAuth();
+    },[]);
+
+
+    useEffect(() => {
+        getPosts();
+    }, [selectedGame])
+
+
+
+//i have to add gotPosts in the use effect for the delete to work
     return (
         <>
             <div>
-                <Link to="/login">Login</Link>
-                <Link to="/signup">Signup</Link>
+                <Link to="/">Login</Link>
+                
                 <Link to ="/createPost">Create Post</Link>
                 <h1>Looking for Group?</h1>
                 <select value={selectedGame} onChange={e => setSelectedGame(e.target.value)}>

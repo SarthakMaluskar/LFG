@@ -32,7 +32,7 @@ export default function CreatePost() {
 
         }, { withCredentials: true })
 
-        navigate("/");
+        navigate("/main");
     }
 
     const options = ["PC", "XBOX", "MOBILE", "18+"];
