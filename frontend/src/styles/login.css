@@ -56,6 +56,9 @@ body{
 }
 
 .submit-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 80px;
     margin-bottom: 10px;
 }
@@ -77,11 +80,17 @@ body{
 
 
 .signup-prompt{
+    display: flex;
+    justify-content: center;
     color: white;
 }
 
 .signup-prompt button{
-    
+    padding: 8px 16px;
     color : white;
     border :none;
+}
+
+#signup-prompt-text{
+    padding-top: 8px;
 }

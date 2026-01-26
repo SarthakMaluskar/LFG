@@ -51,7 +51,7 @@ export default function LoginPage({current}) {
 
                 </form>
 
-                <div className="signup-prompt">Dont have an account? <button onClick={current} className="signup-button">Signup</button></div>
+                <div className="signup-prompt"> <span id='signup-prompt-text'>Dont have an account?</span> <button onClick={current} className="signup-button">Signup</button></div>
             </div>
 
     );

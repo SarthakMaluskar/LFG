@@ -8,6 +8,7 @@ const app = express();
 const mongoose = require('mongoose')
 const User = require('./models/users')
 const Post = require('./models/posts')
+const Comment = require('./models/comments')
 const jwt = require('jsonwebtoken')
 const cookieParser = require("cookie-parser");
 const bcrypt = require('bcrypt');
@@ -146,4 +147,39 @@ app.get('/api/me', (req,res)=>{
     if(!token){
         return res.status(401).json({authenticated : false});
     }
+})
+
+app.post('/api/postDetails/:postId/comment', async (req,res)=>{
+    //api to comment on a post
+    const postId = req.params.postId;
+    const comment = req.body.comment;
+    console.log(comment);
+    const newComment = new Comment({
+        text : comment,
+        postId : postId,
+        userId : req.userId
+    })
+
+    await newComment.save();
+
+    console.log("done saving the commnet to the backend")
+
+    
+})
+
+//api for details of a single post
+app.get('/api/postDetails/:postId', async(req,res)=>{
+    const postId = req.params.postId;
+    const post = await Post.findById(postId);
+    const comments = await Comment.find({postId : postId});
+    console.log("got post and comments")
+    if (!post) {
+    return res.status(404).json({ msg: "Post not found" });
+}
+
+    console.log(post);
+    console.log(comments);
+    res.status(200).json({post :post, comments : comments});
+    //logic to send post title and description to frontend &&
+    //logic to send comments to frontend
 })

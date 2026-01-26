@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import './App.css'
+
 import {Route,Routes} from 'react-router-dom'
 import LoginPage from './components/loginPage.jsx';
 import HomePage from './components/homePage.jsx';

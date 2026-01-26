@@ -1,0 +1,107 @@
+
+
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    background-color: #1A1327;
+    height : 75px;
+    width: 100%;
+    position: fixed;
+}
+.navbar-title{
+    font: bold;
+    margin-left: 30px;
+    color: red;
+    font-size: 50px;
+    font-family: 'Special Gothic Expanded One', sans-serif;
+}
+
+.navbar-search{
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    height : 40px;
+    width: 390px;
+    background-color: red;
+    border-radius: 12px;
+}
+
+.navbar-search-text{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar-search-text input{
+    border: none;
+    background-color: red;
+    margin-left: 50px;
+    border-radius: 12px;
+    font-size: large;
+    height : 90%;
+    width : 320px;
+    font-family: 'Special Gothic Expanded One', sans-serif;
+}
+
+
+
+.main-content{
+    display: flex;
+    flex-direction: row;
+    
+}
+
+.side-bar{
+    height: 100%;
+    width: 180px;
+    background-color: red;
+    position : fixed;
+    margin-top: 76px;
+}
+
+.posts{
+    width: 70%;
+    margin-left: 180px;
+    margin-top: 80px;
+}
+
+.posts-toggled{
+    width: 50%;
+    margin-left: 180px;
+    margin-top : 80px;
+}
+
+.post{
+    width: 100%;
+    background-color: blue;
+    margin: 20px;
+    border-radius: 12px;
+    padding : 10px;
+     cursor: pointer;
+}
+
+
+.side-bar-2{
+    position: fixed;
+    right: 12px;
+    top: 100px;
+    height: 85vh;
+    width: 15%;
+    border-radius: 12px;
+    background-color: red;
+    color: yellow;
+    z-index: 1000; /* Add this */
+}
+
+.side-bar-2-toggled{
+    position: fixed;
+    right: 12px;
+    top: 100px;
+    height: 83vh;
+    width: 35%;
+    border-radius: 12px;
+    background-color: red;
+    color: yellow;
+    z-index: 1000; /* Add this */
+    overflow-y: scroll;
+}
