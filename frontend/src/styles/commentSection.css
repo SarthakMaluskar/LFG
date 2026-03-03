@@ -1,0 +1,14 @@
+.comment-form {
+    border-radius: 12px;
+    position: fixed;
+    bottom: 20px;
+    right: 34px;
+    background-color: blue;
+    width: 100%;
+    max-width: 500px;
+    padding-right:10px;
+}
+
+.commentSection{
+    margin-bottom: 60px;
+}

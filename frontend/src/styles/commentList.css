@@ -1,0 +1,10 @@
+.comment{
+    margin-left: 20px;
+    margin-bottom: 10px;
+    width: 90%;
+    background-color: blueviolet;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+}

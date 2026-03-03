@@ -1,0 +1,14 @@
+.comment-input-form{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+.commentInput{
+    width: 100%;
+}
+
+.comment-submit-button{
+
+}

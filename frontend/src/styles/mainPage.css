@@ -43,6 +43,10 @@
     font-family: 'Special Gothic Expanded One', sans-serif;
 }
 
+.navbar-options{
+    display: flex;
+}
+
 
 
 .main-content{
@@ -97,11 +101,24 @@
     position: fixed;
     right: 12px;
     top: 100px;
-    height: 83vh;
+    height: 85vh;
     width: 35%;
     border-radius: 12px;
     background-color: red;
     color: yellow;
     z-index: 1000; /* Add this */
     overflow-y: scroll;
+}
+
+.top{
+    position: fixed;
+    background-color: brown;
+    width : 100%;
+    max-width: 517px;
+    top: 10;
+    right : 3;
+}
+
+.comment-section-main-page{
+    margin-top: 100px;
 }

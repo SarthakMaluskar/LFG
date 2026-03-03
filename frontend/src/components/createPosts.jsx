@@ -20,10 +20,10 @@ export default function CreatePost() {
         }
         )
     }
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
 
-        axios.post("http://localhost:5000/api/posts", {
+        await axios.post("http://localhost:5000/api/posts", {
             title: title,
             description: description,
             selectedGame : selectedGame,
@@ -31,6 +31,7 @@ export default function CreatePost() {
 
         }, { withCredentials: true })
 
+        console.log("main chale jaaa")
         navigate("/main");
     }
 
