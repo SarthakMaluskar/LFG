@@ -1,31 +1,35 @@
 import { useState } from "react";
 import axios from "axios";
-import '../styles/commentForm.css'
+import '../styles/commentForm.css';
+
 export default function CommentForm({ postId, onCommentAdded }) {
 
     const [commentText, setCommentText] = useState("");
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!commentText.trim()) return;
 
         await axios.post(`http://localhost:5000/api/postDetails/${postId}/comment`, {
             comment: commentText,
-            
-        },{withCredentials : true} )
+        }, { withCredentials: true });
+
         onCommentAdded();
         setCommentText("");
-    }
+    };
 
     return (
         <form onSubmit={handleSubmit} className="comment-input-form">
-            
-                <div className="commentInput">
-                    <input className="commentInput" type="text" value={commentText} onChange={(e) => { setCommentText(e.target.value) }} placeholder="Write Your comment" />
-                </div>
-
-                <div className="comment-submit-button">
-                    <button className="comment-submit-button">Submit</button>
-                </div>
-                    
+            <input
+                className="commentInput"
+                type="text"
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                placeholder="Write a comment..."
+            />
+            <button className="comment-submit-button" type="submit">
+                Post
+            </button>
         </form>
     );
 }

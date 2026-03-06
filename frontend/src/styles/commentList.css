@@ -1,10 +1,100 @@
-.comment{
-    margin-left: 20px;
-    margin-bottom: 10px;
-    width: 90%;
-    background-color: blueviolet;
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@600&display=swap');
+
+.commentList {
+    font-family: 'DM Sans', sans-serif;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 8px 0;  /* was 24px */
+}
+
+.commentList h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 20px;
+    margin-top: 0;  /* add this */
+    padding-bottom: 12px;
+    border-bottom: 2px solid #1a1a2e;
+    letter-spacing: -0.02em;
+}
+
+.comment-empty {
+    text-align: center;
+    color: #9a9aaa;
+    font-size: 0.9rem;
+    padding: 40px 0;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.comment-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.comment {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 16px 20px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    
+    align-items: flex-start;
+    gap: 12px;
+    transition: border-color 0.2s ease;
+}
+
+.comment:hover {
+    border-color: rgba(255, 60, 60, 0.3);
+    box-shadow: none;
+}
+
+.comment-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.comment-author {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ff6666;
+    text-decoration: none;
+}
+
+.comment-author:hover {
+    color: #ff9999;
+}
+
+.comment-text {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.comment-delete-btn {
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid #e0e0ee;
+    color: #aaaacc;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.comment-delete-btn:hover {
+    background: #fff0f0;
+    border-color: #ffb3b3;
+    color: #cc4444;
 }

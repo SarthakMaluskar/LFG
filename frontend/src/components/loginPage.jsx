@@ -9,7 +9,9 @@ export default function LoginPage({current}) {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
+
     const handleSubmit =async (e) => {
 
         try{
@@ -24,16 +26,24 @@ export default function LoginPage({current}) {
         navigate('/main')
         }catch{
             console.log("wrong username or password");
+            setError("Wrong Username or Password");
         }
        
     }
 
     return (
         
+            <>
+            
+            
             <div className="authcontainer">
+                
                 <div className="title">Login</div>
+                
                 <form onSubmit={handleSubmit}>
+                    
                     <div className="inputs">
+                        <p className='error-msg'>{error}</p>
                         <div className="input">
                             <img src={username_img} alt="" className="logo" />
                             <input type="text" placeholder='Username' value={username} onChange={(e) => { setUsername(e.target.value) }} />
@@ -54,5 +64,9 @@ export default function LoginPage({current}) {
                 <div className="signup-prompt"> <span id='signup-prompt-text'>Dont have an account?</span> <button onClick={current} className="signup-button">Signup</button></div>
             </div>
 
+            </>
+
     );
 }
+
+

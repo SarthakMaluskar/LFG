@@ -129,14 +129,20 @@ app.post('/api/signup', async (req, res) => {
 
 })
 
-app.get('/api/posts', async (req, res) => {
+app.get('/api/posts', requireAuth, async (req, res) => {
     const { game } = req.query;
     const filter = game === "All Games" ? {} : { game };
-    const posts = await Post.find(filter).populate("author", "username");
-
-    res.json(posts)
-
-})
+    
+    // Chained .sort({ createdAt: -1 }) to get newest posts first
+    const posts = await Post.find(filter)
+        .populate("author", "username")
+        .sort({ createdAt: -1 }); 
+        
+    const id = req.userId;
+    const user = await User.findById(id);
+    
+    res.json({posts : posts, userId : req.userId, username : user.username});
+});
 // 
 app.post('/api/posts', requireAuth, async (req, res) => {
     console.log(req.userId);
@@ -210,17 +216,21 @@ app.post('/api/postDetails/:postId/comment', requireAuth, async (req, res) => {
 app.get('/api/postDetails/:postId', requireAuth , async (req, res) => {
     const postId = req.params.postId;
     const post = await Post.findById(postId);
-    const comments = await Comment.find({ postId: postId }).populate('userId', 'username');
-    console.log("got post and comments")
+    
+    // Chained .sort() to get the newest comments first
+    const comments = await Comment.find({ postId: postId })
+        .populate('userId', 'username')
+        .sort({ createdAt: -1 }); 
+        
+    console.log("got post and comments");
+    
     if (!post) {
         return res.status(404).json({ msg: "Post not found" });
     }
 
     console.log(req.userId);
     res.status(200).json({ post: post, comments: comments, userId : req.userId });
-    //logic to send post title and description to frontend &&
-    //logic to send comments to frontend
-})
+});
 
 
 app.delete('/api/postDetails/comments/:commentId', async (req, res) => {

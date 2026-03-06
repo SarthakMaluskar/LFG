@@ -1,11 +1,83 @@
-.signup-submit-button{
-    
-   
-    margin-top: 64px;
-    margin-bottom: 10px;
+.authcontainer{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:#1c1530;
+}
+
+.authcontainer form{
+    width:420px;
+}
+
+.title{
+    font-size:32px;
+    font-weight:600;
+    margin-bottom:20px;
+    color:white;
+}
+
+.inputs{
+    display:flex;
+    flex-direction:column;
+}
+
+.input{
+    display:flex;
+    align-items:center;
+    background:#2a2340;
+    border-radius:8px;
+    padding:10px;
+    margin-top:12px;
+}
+
+.input input{
+    border:none;
+    outline:none;
+    background:none;
+    color:white;
+    width:100%;
+    font-size:15px;
+}
+
+.logo{
+    width:18px;
+    margin-right:8px;
 }
 
 .signup-submit-button button{
-    width : 300px;
-    background-color: #764ba2;
+    margin-top:18px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#7b55c7;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.signup-submit-button button:hover{
+    background:#8b63d9;
+}
+
+.signup-prompt{
+    margin-top:20px;
+    font-size:14px;
+    color:white;
+}
+
+.signup-button{
+    margin-left:8px;
+    background:black;
+    color:white;
+    border:none;
+    padding:6px 10px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.signup-button:hover{
+    background:#222;
 }
