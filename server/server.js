@@ -8,6 +8,8 @@ const app = express();
 const mongoose = require('mongoose')
 const User = require('./models/users')
 const Post = require('./models/posts')
+const Friend = require('./models/friends')
+const FriendRequest = require('./models/friendRequest')
 const Comment = require('./models/comments')
 const jwt = require('jsonwebtoken')
 const cookieParser = require("cookie-parser");
@@ -63,11 +65,11 @@ app.get('/api', (req, res) => {
     res.json({ users: ["user1", "user2", "user3", "user4"] })
 })
 
-app.get('/api/userInfo/:id',async (req,res)=>{
+app.get('/api/userInfo/:id', requireAuth, async (req, res) => {
     const userId = req.params.id;
 
-    const user =await User.findById(userId).select("-password");
-    res.json(user);
+    const user = await User.findById(userId).select("-password");
+    res.json({ user, clientId: req.userId });
     console.log(user);
 })
 
@@ -132,16 +134,16 @@ app.post('/api/signup', async (req, res) => {
 app.get('/api/posts', requireAuth, async (req, res) => {
     const { game } = req.query;
     const filter = game === "All Games" ? {} : { game };
-    
+
     // Chained .sort({ createdAt: -1 }) to get newest posts first
     const posts = await Post.find(filter)
         .populate("author", "username")
-        .sort({ createdAt: -1 }); 
-        
+        .sort({ createdAt: -1 });
+
     const id = req.userId;
     const user = await User.findById(id);
-    
-    res.json({posts : posts, userId : req.userId, username : user.username});
+
+    res.json({ posts: posts, userId: req.userId, username: user.username });
 });
 // 
 app.post('/api/posts', requireAuth, async (req, res) => {
@@ -213,23 +215,23 @@ app.post('/api/postDetails/:postId/comment', requireAuth, async (req, res) => {
 })
 
 //api for details of a single post
-app.get('/api/postDetails/:postId', requireAuth , async (req, res) => {
+app.get('/api/postDetails/:postId', requireAuth, async (req, res) => {
     const postId = req.params.postId;
     const post = await Post.findById(postId);
-    
+
     // Chained .sort() to get the newest comments first
     const comments = await Comment.find({ postId: postId })
         .populate('userId', 'username')
-        .sort({ createdAt: -1 }); 
-        
+        .sort({ createdAt: -1 });
+
     console.log("got post and comments");
-    
+
     if (!post) {
         return res.status(404).json({ msg: "Post not found" });
     }
 
     console.log(req.userId);
-    res.status(200).json({ post: post, comments: comments, userId : req.userId });
+    res.status(200).json({ post: post, comments: comments, userId: req.userId });
 });
 
 
@@ -238,4 +240,75 @@ app.delete('/api/postDetails/comments/:commentId', async (req, res) => {
     console.log(commentId)
     await Comment.findByIdAndDelete(commentId);
     return res.status(200).json({ msg: "comment deleted" });
+})
+
+
+app.post('/api/friends/request', requireAuth, async (req, res) => {
+
+    const sender = req.userId;
+    const receiver = req.body.userId;
+
+    if (sender == receiver) {
+        return res.status(400).json({ message: "cannot request to yourself" })
+    }
+
+    const existingFriend = await Friend.findOne({
+        $or: [
+            { user1: sender, user2: receiver },
+            { user1: receiver, user2: sender }
+        ]
+    })
+
+    if (existingFriend) {
+        return res.status(400).json({ message: "you both are already friends" });
+    }
+
+    const existingRequest = await FriendRequest.findOne({
+
+        sender: sender, receiver: receiver
+
+    })
+
+    if (existingRequest) {
+        return res.status(400).json({ message: "request already sent" });
+    }
+
+    const request = new FriendRequest({
+        sender: sender,
+        receiver: receiver
+    });
+
+    await request.save();
+
+    return res.status(201).json(request);
+
+})
+
+
+app.get("/api/alerts", requireAuth, async (req, res) => {
+
+
+    const requests = await FriendRequest
+        .find({ receiver: req.userId })
+        .populate("sender", "username");
+    console.log(req.userId);
+    return res.status(201).json(requests);
+
+})
+
+app.post('/api/friends/accpet', requireAuth, async(req,res)=>{
+    const reciever = 2;
+    const sender = 3;
+
+    if(reciver > sender){
+
+    }else{
+
+    }
+
+    console.log()
+})
+
+app.post('/api/friends/reject',requireAuth,async(req,res)=>{
+    
 })

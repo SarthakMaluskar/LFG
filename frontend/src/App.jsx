@@ -9,6 +9,7 @@ import MainPage from './components/mainPage.jsx'
 import SignupPage from './components/signupPage.jsx';
 import CreatePost from './components/createPosts.jsx'
 import UserInfo from './components/userInfo.jsx';
+import Alerts from './components/alerts.jsx'
 function App() {
   const [users, setUsers] = useState([]);   // store data from backend
 
@@ -31,6 +32,7 @@ function App() {
         <Route path="/signup" element={<SignupPage/>}/>
         <Route path="/createPost" element={<CreatePost/>}/>
         <Route path="/users/:id" element={<UserInfo/>}/>
+        <Route path="/alerts/:id" element={<Alerts/>}/>
         
         
     </Routes>
