@@ -67,11 +67,39 @@ app.get('/api', (req, res) => {
 
 app.get('/api/userInfo/:id', requireAuth, async (req, res) => {
     const userId = req.params.id;
-
+ 
     const user = await User.findById(userId).select("-password");
-    res.json({ user, clientId: req.userId });
-    console.log(user);
-})
+ 
+    const posts = await Post.find({ author: userId }).sort({ createdAt: -1 });
+ 
+    const friendDocs = await Friend.find({
+        $or: [{ user1: userId }, { user2: userId }]
+    }).populate("user1 user2");
+ 
+    const friends = friendDocs.map(f =>
+        f.user1._id.toString() === userId ? f.user2 : f.user1
+    );
+ 
+    // check if the logged in client is already friends with this user
+    const isFriend = friendDocs.some(f =>
+        f.user1._id.toString() === req.userId || f.user2._id.toString() === req.userId
+    );
+ 
+    // check if a request was already sent
+    const existingRequest = await FriendRequest.findOne({
+        sender: req.userId,
+        receiver: userId
+    });
+ 
+    res.json({
+        user,
+        posts,
+        friends,
+        isFriend,
+        requestAlreadySent: !!existingRequest,
+        clientId: req.userId
+    });
+});
 
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;

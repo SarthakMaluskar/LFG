@@ -1,16 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import '../styles/navbar.css';
+import { useMain } from '../context/mainContext';
 
-function Navbar({ selectedGame, setSelectedGame, userId, onLogout }) {
+function Navbar() {
 
     const navigate = useNavigate();
+    const { selectedGame, setSelectedGame, handleLogout } = useMain();
 
     const handleCreatePost = () => {
         navigate('/createPost');
-    };
-
-    const handleLogout = async () => {
-        if (onLogout) onLogout();
     };
 
     return (

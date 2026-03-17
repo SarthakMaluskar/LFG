@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-import {Route,Routes} from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import LoginPage from './components/loginPage.jsx';
 import HomePage from './components/homePage.jsx';
 import MainPage from './components/mainPage.jsx'
@@ -10,6 +10,16 @@ import SignupPage from './components/signupPage.jsx';
 import CreatePost from './components/createPosts.jsx'
 import UserInfo from './components/userInfo.jsx';
 import Alerts from './components/alerts.jsx'
+
+import { MainProvider } from './context/mainContext';
+
+<Route path="/main" element={
+  <MainProvider>
+    <MainPage />
+  </MainProvider>
+} />
+
+
 function App() {
   const [users, setUsers] = useState([]);   // store data from backend
 
@@ -24,31 +34,39 @@ function App() {
   }, []);
 
   return (
-<div>
-    <Routes>
-        <Route path="/" element={<HomePage/>}/>
-        <Route path="/main" element={<MainPage/>}/>
-        <Route path="/login" element={<LoginPage/>}/>
-        <Route path="/signup" element={<SignupPage/>}/>
-        <Route path="/createPost" element={<CreatePost/>}/>
-        <Route path="/users/:id" element={<UserInfo/>}/>
-        <Route path="/alerts/:id" element={<Alerts/>}/>
-        
-        
-    </Routes>
-    <>
-      {/* navbar */}
+    <div>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/main" element={
+          <MainProvider>
+            <MainPage />
+          </MainProvider>
+        } />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/createPost" element={<CreatePost />} />
+        <Route path="/users/:id" element={
+          <MainProvider>
+            <UserInfo />
+          </MainProvider>
+        } />
+        <Route path="/alerts/:id" element={<Alerts />} />
 
-      {/* <LoginPage/> */}
 
-      {/* {users.map((user, index) => (
+      </Routes>
+      <>
+        {/* navbar */}
+
+        {/* <LoginPage/> */}
+
+        {/* {users.map((user, index) => (
         <p key={index}>{user}</p>
       ))} */}
 
-    </>
+      </>
 
 
-</div>
+    </div>
   );
 }
 
