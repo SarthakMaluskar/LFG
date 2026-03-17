@@ -1,0 +1,71 @@
+.side-bar {
+    height: calc(100vh - 75px);
+    width: 180px;
+    background-color: #1a1327;
+    position: fixed;
+    top: 75px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    box-sizing: border-box;
+    gap: 24px;
+}
+
+.side-bar h1 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0;
+}
+
+.side-bar h1 span {
+    display: block;
+    color: #ff4444;
+    font-size: 1rem;
+    margin-top: 4px;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.side-bar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.side-bar-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.45);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.side-bar-nav-item:hover {
+    background: rgba(255, 60, 60, 0.1);
+    color: #ff6666;
+}
+
+.side-bar-nav-item svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.side-bar-nav-item:hover svg {
+    opacity: 1;
+}

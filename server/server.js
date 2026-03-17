@@ -192,6 +192,8 @@ app.get('/api/me', (req, res) => {
     console.log("/me func call", token)
     if (!token) {
         return res.status(401).json({ authenticated: false });
+    }else{
+        res.json({authenticated : true})
     }
 })
 
@@ -296,19 +298,51 @@ app.get("/api/alerts", requireAuth, async (req, res) => {
 
 })
 
-app.post('/api/friends/accpet', requireAuth, async(req,res)=>{
-    const reciever = 2;
-    const sender = 3;
+app.post('/api/friends/accept', requireAuth, async (req, res) => {
+    const receiver = req.userId;
 
-    if(reciver > sender){
-
-    }else{
-
+    const sender = req.body.sender;
+    const reqDetails = await FriendRequest.deleteOne({ sender: sender, receiver: receiver })
+    let friend;
+    if (receiver > sender) {
+        friend = new Friend({
+            user1: receiver,
+            user2: sender
+        })
+    } else {
+        friend = new Friend({
+            user1: sender,
+            user2: receiver
+        })
     }
 
-    console.log()
+    await friend.save();
+    console.log("friend done")
+    res.status(200).json({ message: "successfully added friend" });
 })
 
-app.post('/api/friends/reject',requireAuth,async(req,res)=>{
-    
+app.post('/api/friends/reject', requireAuth, async (req, res) => {
+
+})
+
+
+app.get('/api/friends', requireAuth, async (req, res) => {
+    const currUserId = req.userId;
+    const friends = await Friend.find({
+        $or: [{ user1: currUserId }, { user2: currUserId }]
+    }).populate("user1 user2");
+
+    const friendList = friends.map(f => {
+        if(f.user1._id == currUserId){
+            return f.user2;
+        }else{
+            return f.user1;
+        }
+    }
+        
+    )
+
+    res.status(201).json(friendList);
+
+
 })

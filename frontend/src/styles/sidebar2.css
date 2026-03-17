@@ -1,0 +1,159 @@
+.side-bar-2 {
+    position: fixed;
+    right: 12px;
+    top: 88px;
+    height: 85vh;
+    width: 15%;
+    border-radius: 14px;
+    background: #12092a;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    color: white;
+    z-index: 1000;
+}
+
+.side-bar-2-toggled {
+    position: fixed;
+    right: 12px;
+    top: 88px;
+    height: 85vh;
+    width: 35%;
+    border-radius: 14px;
+    background: #12092a;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+    color: white;
+    z-index: 1000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.top {
+    flex-shrink: 0;
+    width: 100%;
+    background: linear-gradient(160deg, #1e1035 0%, #2a0a1a 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    position: relative;
+    overflow: hidden;
+}
+
+.top::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(255,50,50,0.25) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.top-inner {
+    padding: 14px 16px 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 180, 180, 0.7);
+}
+
+.exit-button {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    padding: 0;
+}
+
+.exit-button:hover {
+    background: rgba(255, 80, 80, 0.25);
+    border-color: rgba(255, 80, 80, 0.5);
+    color: #fff;
+}
+
+.postTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    text-shadow: 0 0 30px rgba(255, 100, 100, 0.4);
+}
+
+.comment-section-main-page {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin-top: 0;
+}
+
+.friends-list {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.friend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.friend-item:hover {
+    background: rgba(255, 60, 60, 0.1);
+    color: #ff6666;
+    border-color: rgba(255, 60, 60, 0.25);
+}
+
+.friend-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255,60,60,0.3), rgba(100,0,50,0.4));
+    border: 1px solid rgba(255, 80, 80, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #ff8888;
+    flex-shrink: 0;
+}

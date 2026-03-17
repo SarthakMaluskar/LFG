@@ -16,10 +16,12 @@ export default function Alerts() {
         }
 
         fetchRequests();
-    }, [id])
+    }, [id,requests])
 
     const handleAccept = async(senderId) =>{
-        
+        const res = await axios.post('http://localhost:5000/api/friends/accept',{
+            sender : senderId
+        }, {withCredentials : true})
     }
 
     const handleReject = async(senderId) =>{
