@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-
+import { socket } from "./socket";
 import { Route, Routes } from 'react-router-dom'
 import LoginPage from './components/loginPage.jsx';
 import HomePage from './components/homePage.jsx';
@@ -10,8 +10,11 @@ import SignupPage from './components/signupPage.jsx';
 import CreatePost from './components/createPosts.jsx'
 import UserInfo from './components/userInfo.jsx';
 import Alerts from './components/alerts.jsx'
+import Chat from './components/chat.jsx';
+import Messages from './components/messages.jsx';
+import { MainProvider,useMain } from './context/mainContext';
 
-import { MainProvider } from './context/mainContext';
+
 
 <Route path="/main" element={
   <MainProvider>
@@ -21,6 +24,12 @@ import { MainProvider } from './context/mainContext';
 
 
 function App() {
+
+ const user = JSON.parse(localStorage.getItem("user"));
+const userId = user?.id;
+
+console.log(userId);
+
   const [users, setUsers] = useState([]);   // store data from backend
 
   const fetchAPI = async () => {
@@ -32,6 +41,18 @@ function App() {
   useEffect(() => {
     fetchAPI();
   }, []);
+
+  useEffect(() => {
+          
+          socket.connect();
+  
+          // ✅ register user
+          socket.emit("register", userId);
+  
+          return () => {
+              socket.disconnect();
+          };
+      }, [userId]);
 
   return (
     <div>
@@ -50,8 +71,23 @@ function App() {
             <UserInfo />
           </MainProvider>
         } />
-        <Route path="/alerts/:id" element={<Alerts />} />
+        <Route path="/alerts/:id" element={
+          <MainProvider>
+            <Alerts />
+          </MainProvider>
+        } />
+        <Route path="/chats" element={
+          <MainProvider>
+            <Chat/>
+          </MainProvider>
+        } />
+        <Route path="/chats/:chatId" element={
+          <MainProvider>
+            <Messages/>
+          </MainProvider>
+        } />
 
+        
 
       </Routes>
       <>

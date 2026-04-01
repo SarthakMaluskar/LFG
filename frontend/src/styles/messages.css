@@ -1,0 +1,111 @@
+/* html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background-color: #0b0616;
+} */
+
+.messages-layout {
+    display: flex;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #0b0616;
+}
+
+.messages-page {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    min-width: 0;
+    margin-left: 180px;
+}
+
+.messages-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 42, 109, 0.2);
+    background: linear-gradient(135deg, #140a2a, #0d041c);
+    flex-shrink: 0;
+    min-height: 55px;
+    display: flex;
+    align-items: center;
+}
+
+.messages-user {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    opacity: 1;
+}
+
+.messages-body {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;   /* ← only this scrolls */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #0b0616;
+    min-height: 0;
+}
+.msg {
+    max-width: 60%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    word-wrap: break-word;
+    color: white;
+}
+
+.msg.left {
+    align-self: flex-start;
+    background: #140a2a;
+    border: 1px solid rgba(255, 42, 109, 0.2);
+}
+
+.msg.right {
+    align-self: flex-end;
+    background: #ff2a6d;
+}
+
+.messages-input {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid rgba(255, 42, 109, 0.2);
+    background: linear-gradient(135deg, #140a2a, #0d041c);
+    flex-shrink: 0;
+}
+
+.msg-input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 42, 109, 0.2);
+    background: #0d041c;
+    color: white;
+    outline: none;
+}
+
+.send-btn {
+    margin-left: 10px;
+    padding: 10px 18px;
+    background: #ff2a6d;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+.send-btn:hover {
+    background: #ff4d85;
+}
+
+body {
+    margin: 0;
+    background-color: #0b0616;
+}

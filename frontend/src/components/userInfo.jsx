@@ -65,6 +65,18 @@ function UserInfo() {
     const isOwnProfile = user._id === clientId;
     const avatarLetter = user.username?.[0]?.toUpperCase();
 
+    const handleMessage = async () =>{
+        const res = await axios.post("http://localhost:5000/api/chats", {
+            member1 : user._id,
+        }, {withCredentials : true})
+
+        navigate(`/chats/${res.data.chatId}`, {
+            state : {username : user.username}
+        });
+
+        
+    }
+
     return (
         <>
             <Navbar />
@@ -118,6 +130,8 @@ function UserInfo() {
                         </div>
 
                         {!isOwnProfile && (
+                            <div>
+                                 <button onClick={handleMessage} className='ui-friend-btn'>Message</button>
                             <button
                                 className={`ui-friend-btn ${isFriend ? 'ui-friend-btn--friends' : requestSent ? 'ui-friend-btn--sent' : ''}`}
                                 onClick={handleAddFriend}
@@ -125,6 +139,9 @@ function UserInfo() {
                             >
                                 {isFriend ? '✓ Friends' : requestSent ? '✓ Request Sent' : '+ Add Friend'}
                             </button>
+
+                            </div>
+                           
                         )}
 
                     </div>
@@ -132,7 +149,7 @@ function UserInfo() {
                     {/* Bio + Stats */}
                     <div className="ui-meta-strip">
                         <p className="ui-bio">
-                            Hardcore gamer. Always looking for a squad. BGMI main, occasional Valorant grinder. Night owl. GGs only. 🎮
+                            GG
                         </p>
                         <div className="ui-stats">
                             <div className="ui-stat">

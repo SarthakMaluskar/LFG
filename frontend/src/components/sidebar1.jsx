@@ -13,10 +13,23 @@ function Sidebar1({ userId }) {
         navigate(`/alerts/${userId}`);
     };
 
+    const handleMessages = () => {
+        navigate('/chats')
+    }
+    const handleHome = () =>{
+        navigate('/main')
+    }
+
     return (
         <div className="side-bar">
             <nav className="side-bar-nav">
 
+                <button
+                    onClick={handleHome}
+                    className="side-bar-nav-item"
+                >
+                    <span>Home</span>
+                </button>
                 <button
                     onClick={handleProfile}
                     className="side-bar-nav-item"
@@ -24,7 +37,8 @@ function Sidebar1({ userId }) {
                     <span>Profile</span>
                 </button>
 
-                <button className="side-bar-nav-item">
+                <button onClick={handleMessages} 
+                className="side-bar-nav-item">
                     <span>Messages</span>
                 </button>
 

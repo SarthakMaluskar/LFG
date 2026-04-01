@@ -11,6 +11,9 @@ const Post = require('./models/posts')
 const Friend = require('./models/friends')
 const FriendRequest = require('./models/friendRequest')
 const Comment = require('./models/comments')
+const Chat = require('./models/chats');
+const Message = require('./models/messages');
+
 const jwt = require('jsonwebtoken')
 const cookieParser = require("cookie-parser");
 const bcrypt = require('bcrypt');
@@ -26,17 +29,60 @@ const io = new Server(server, {
     }
 })
 
+const onlineUsers = new Map();
+
 io.on("connection", (socket) => {
     console.log("user connected", socket.id);
 
+    // ✅ register user
+    socket.on("register", (userId) => {
+        socket.userId = userId;
+        onlineUsers.set(userId, socket.id);
+        console.log("User registered:", userId, socket.id);
+    });
+
+    socket.on("send_message", async ({ toUserId, message, chatId }) => {
+
+        console.log("hello from send_message")
+        console.log(toUserId)
+        console.log(chatId);
+        console.log(message)
+        const newMessage = new Message({
+            chatId,
+            senderId: socket.userId,  
+            receiverId: toUserId,
+            message: message
+        });
+
+        await newMessage.save();
+
+        const receiverSocketId = onlineUsers.get(toUserId);
+
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("receive_message", {
+                fromUserId: socket.id,
+                message
+            });
+        }
+    });
+
+    // ✅ disconnect
     socket.on("disconnect", () => {
-        console.log("user dissconnected", socket.id);
+        console.log("user disconnected", socket.id);
+
+        for (let [userId, sockId] of onlineUsers.entries()) {
+            if (sockId === socket.id) {
+                onlineUsers.delete(userId);
+                break;
+            }
+        }
     });
 });
 
 //all func imports
 
 const requireAuth = require("./middleware/authMiddleware");
+const { argon2Sync } = require('crypto');
 
 // all app.use
 app.use(cors({
@@ -57,7 +103,7 @@ mongoose.connect('mongodb://localhost:27017/LFG')
         console.log('❌ Mongoose connection error:', error.message);
     });
 
-app.listen(5000, () => {
+server.listen(5000, () => {
     console.log("server running on port 5000")
 })
 
@@ -67,30 +113,30 @@ app.get('/api', (req, res) => {
 
 app.get('/api/userInfo/:id', requireAuth, async (req, res) => {
     const userId = req.params.id;
- 
+
     const user = await User.findById(userId).select("-password");
- 
+
     const posts = await Post.find({ author: userId }).sort({ createdAt: -1 });
- 
+
     const friendDocs = await Friend.find({
         $or: [{ user1: userId }, { user2: userId }]
     }).populate("user1 user2");
- 
+
     const friends = friendDocs.map(f =>
         f.user1._id.toString() === userId ? f.user2 : f.user1
     );
- 
+
     // check if the logged in client is already friends with this user
     const isFriend = friendDocs.some(f =>
         f.user1._id.toString() === req.userId || f.user2._id.toString() === req.userId
     );
- 
+
     // check if a request was already sent
     const existingRequest = await FriendRequest.findOne({
         sender: req.userId,
         receiver: userId
     });
- 
+
     res.json({
         user,
         posts,
@@ -119,7 +165,13 @@ app.post('/api/login', async (req, res) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
     res.cookie("token", token, { httpOnly: true, sameSite: "lax", maxAge: 7 * 24 * 60 * 60 * 1000 });
-    res.json({ success: true })
+    res.json({
+        success: true,
+        user: {
+            id: user._id,
+            username: user.username
+        }
+    });
 })
 
 app.post("/api/logout", (req, res) => {
@@ -220,8 +272,8 @@ app.get('/api/me', (req, res) => {
     console.log("/me func call", token)
     if (!token) {
         return res.status(401).json({ authenticated: false });
-    }else{
-        res.json({authenticated : true})
+    } else {
+        res.json({ authenticated: true })
     }
 })
 
@@ -361,16 +413,72 @@ app.get('/api/friends', requireAuth, async (req, res) => {
     }).populate("user1 user2");
 
     const friendList = friends.map(f => {
-        if(f.user1._id == currUserId){
+        if (f.user1._id == currUserId) {
             return f.user2;
-        }else{
+        } else {
             return f.user1;
         }
     }
-        
+
     )
 
     res.status(201).json(friendList);
 
 
+})
+
+
+
+
+app.get('/chats', requireAuth, async (req, res) => {
+    try {
+        const userId = req.userId;
+
+        const chats = await Chat.find({
+            members: { $in: [userId] }
+        }).sort({ updatedAt: -1 });
+
+        const formattedChats = await Promise.all(
+            chats.map(async (chat) => {
+                const otherUserId = chat.members.find(m => m !== userId);
+
+                const user = await User.findById(otherUserId);
+
+                return {
+                    _id: chat._id,
+                    otherUserId,
+                    username: user?.username, // 👈 THIS
+                    lastMessage: chat.lastMessage,
+                    updatedAt: chat.updatedAt
+                };
+            })
+        );
+
+        res.json(formattedChats);
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch chats" });
+    }
+});
+
+
+app.post('/api/chats', requireAuth, async (req, res) => {
+
+    const userId = req.userId;
+    const otherUserId = req.body.member1;
+    const sortedMembers = [userId, otherUserId].sort();
+
+    let chat = await Chat.findOne({
+        members: sortedMembers
+    });
+
+    if (!chat) {
+        chat = new Chat({
+            members: sortedMembers,
+            lastMessage: ""
+        })
+
+        await chat.save();
+    }
+
+    res.status(200).json({ chatId: chat._id });
 })

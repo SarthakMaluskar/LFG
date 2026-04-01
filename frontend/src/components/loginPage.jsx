@@ -17,10 +17,13 @@ export default function LoginPage({current}) {
         try{
              e.preventDefault();
 
-        await axios.post("http://localhost:5000/api/login", {
+        const res = await axios.post("http://localhost:5000/api/login", {
             username: username,
             password: password
         }, { withCredentials: true })
+
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+
         setUsername("");
         setPassword("");
         navigate('/main')

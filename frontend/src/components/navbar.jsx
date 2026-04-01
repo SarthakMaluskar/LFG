@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import '../styles/navbar.css';
 import { useMain } from '../context/mainContext';
-
+import { Link } from 'react-router-dom';
 function Navbar() {
 
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ function Navbar() {
     return (
         <div className="navbar">
 
-            <div className="navbar-title">LFG</div>
+            <div className="navbar-title"><Link to={'/main'}>LFG</Link></div>
 
             <div className="navbar-center">
 

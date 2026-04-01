@@ -8,9 +8,17 @@ import Sidebar1 from './sidebar1';
 import Navbar from './navbar';
 import Sidebar2 from './sidebar2';
 
+
+import { socket } from "../socket";
+
+
+
 import { useMain } from '../context/mainContext';
 
 function MainPage() {
+
+    
+    
 
     const navigate = useNavigate();
 
@@ -25,6 +33,9 @@ function MainPage() {
         deletePost,
         handleLogout
     } = useMain();
+
+    //socket
+    
 
     const [togglePost, setTogglePost] = useState(false);
     const [postTitle, setPostTitle] = useState("");
