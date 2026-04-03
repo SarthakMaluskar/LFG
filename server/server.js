@@ -41,30 +41,25 @@ io.on("connection", (socket) => {
         console.log("User registered:", userId, socket.id);
     });
 
-    socket.on("send_message", async ({ toUserId, message, chatId }) => {
-
-        console.log("hello from send_message")
-        console.log(toUserId)
-        console.log(chatId);
-        console.log(message)
-        const newMessage = new Message({
-            chatId,
-            senderId: socket.userId,  
-            receiverId: toUserId,
-            message: message
-        });
-
-        await newMessage.save();
-
-        const receiverSocketId = onlineUsers.get(toUserId);
-
-        if (receiverSocketId) {
-            io.to(receiverSocketId).emit("receive_message", {
-                fromUserId: socket.id,
-                message
-            });
-        }
+    socket.on("send_message", async ({ toUserId, message, chatId, senderId }) => {
+    console.log("📩 Received send_message:", { toUserId, message, chatId, senderId });
+    const newMessage = await Message.create({
+        chatId,
+        senderId,
+        receiverId: toUserId,
+        message
     });
+
+    const receiverSocketId = onlineUsers.get(toUserId);
+
+    // send to receiver
+    if (receiverSocketId) {
+        io.to(receiverSocketId).emit("receive_message", newMessage);
+    }
+
+    // ✅ send back to sender ALSO
+    io.to(socket.id).emit("receive_message", newMessage);
+});
 
     // ✅ disconnect
     socket.on("disconnect", () => {
@@ -180,6 +175,8 @@ app.post("/api/logout", (req, res) => {
         secure: false, // true in production (HTTPS)
         sameSite: "lax"
     });
+
+    
 
     res.json({ message: "Logged out successfully" });
 });
@@ -482,3 +479,22 @@ app.post('/api/chats', requireAuth, async (req, res) => {
 
     res.status(200).json({ chatId: chat._id });
 })
+
+
+
+app.get('/api/messages', async (req, res) => {
+    const { senderId, receiverId } = req.query;
+
+    try {
+        const messages = await Message.find({
+            $or: [
+                { senderId: senderId, receiverId: receiverId },
+                { senderId: receiverId, receiverId: senderId }
+            ]
+        }).sort({ createdAt: 1 }); // oldest → newest
+
+        res.json(messages);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});

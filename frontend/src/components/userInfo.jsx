@@ -71,7 +71,7 @@ function UserInfo() {
         }, {withCredentials : true})
 
         navigate(`/chats/${res.data.chatId}`, {
-            state : {username : user.username}
+            state : {username : user.username, userId : user._id}
         });
 
         

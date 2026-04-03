@@ -1,51 +1,90 @@
-import { useMain } from "../context/mainContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import Navbar from "./navbar";
 import Sidebar1 from "./sidebar1";
-import Sidebar2 from "./sidebar2";
 import '../styles/messages.css'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { socket } from "../socket";
-
-import { useParams } from "react-router-dom";
+import axios from "axios";
 
 export default function Messages() {
 
     const [text, setText] = useState("");
+    const [messages, setMessages] = useState([]);
+    const bottomRef = useRef(null);
 
-    const { activePostId, setActivePostId, friends } = useMain();
     const location = useLocation();
+    const { chatId } = useParams();
+
     const user = JSON.parse(localStorage.getItem("user"));
     const Id = user?.id;
-    const { chatId } = useParams();
+
     const username = location.state?.username;
-    
 
     const [receiverId, setReceiverId] = useState(null);
 
     useEffect(() => {
         if (location.state?.userId) {
             setReceiverId(location.state.userId);
+            localStorage.setItem("receiverId", location.state.userId);
+        } else {
+            const saved = localStorage.getItem("receiverId");
+            if (saved) setReceiverId(saved);
         }
     }, [location.state]);
 
+    useEffect(() => {
+        if (!Id || !receiverId) return;
 
+        const fetchMessages = async () => {
+            try {
+                const res = await axios.get("http://localhost:5000/api/messages", {
+                    params: {
+                        senderId: Id,
+                        receiverId
+                    }
+                }, { withCredentials: true });
+
+                setMessages(res.data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchMessages();
+    }, [Id, receiverId]);
+
+    // ✅ auto scroll on new messages
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
+    useEffect(() => {
+        socket.off("receive_message");
+
+        socket.on("receive_message", (newMsg) => {
+            setMessages(prev => [...prev, newMsg]);
+        });
+
+        return () => socket.off("receive_message");
+    }, []);
 
     const handleSend = () => {
-        console.log(text)
-        console.log(chatId)
+        if (!text.trim()) return;
 
-        console.log("other user")
-        
+        if (!Id || !receiverId || !chatId) {
+            console.log("❌ Not ready:", { Id, receiverId, chatId });
+            return;
+        }
+
         socket.emit("send_message", {
             chatId,
-            toUserId: receiverId,  // 👈 dynamic
+            senderId: Id,
+            toUserId: receiverId,
             message: text
         });
 
         setText("");
     };
-
 
     return (
         <>
@@ -66,29 +105,15 @@ export default function Messages() {
 
                     {/* Body */}
                     <div className="messages-body">
-
-                        {/* Dummy messages */}
-                        <div className="msg left">Hello bro</div>
-                        <div className="msg right">Hi!</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-                        <div className="msg left">Testing UI</div>
-
-
+                        {messages.map((msg, index) => (
+                            <div
+                                key={index}
+                                className={`msg ${msg.senderId === Id ? "right" : "left"}`}
+                            >
+                                {msg.message}
+                            </div>
+                        ))}
+                        <div ref={bottomRef} /> {/* ✅ scroll target */}
                     </div>
 
                     {/* Input */}
@@ -96,14 +121,21 @@ export default function Messages() {
                         <input
                             type="text"
                             placeholder="Type a message..."
-                            className="msg-input" value={text} onChange={(e) => setText(e.target.value)}
+                            className="msg-input"
+                            value={text}
+                            onChange={(e) => setText(e.target.value)}
+                            onKeyDown={(e) => e.key === "Enter" && handleSend()} // ✅ bonus: enter to send
                         />
-                        <button onClick={handleSend} className="send-btn">Send</button>
+                        <button
+                            onClick={handleSend}
+                            className="send-btn"
+                            disabled={!Id || !receiverId || !chatId}
+                        >
+                            Send
+                        </button>
                     </div>
 
                 </div>
-
-
             </div>
         </>
     );

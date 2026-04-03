@@ -4,47 +4,51 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/login.css"
 import username_img from '../assets/user.png'
 import pass_img from '../assets/pass.png'
-
-export default function LoginPage({current}) {
+import { socket } from "../socket"; 
+export default function LoginPage({ current }) {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit =async (e) => {
+    const handleSubmit = async (e) => {
 
-        try{
-             e.preventDefault();
+        try {
+            e.preventDefault();
 
-        const res = await axios.post("http://localhost:5000/api/login", {
-            username: username,
-            password: password
-        }, { withCredentials: true })
+            const res = await axios.post("http://localhost:5000/api/login", {
+                username: username,
+                password: password
+            }, { withCredentials: true })
 
-        localStorage.setItem("user", JSON.stringify(res.data.user));
+            
+             const user = res.data.user; 
+            localStorage.setItem("user", JSON.stringify(res.data.user));
+            socket.connect();          // ✅ reconnect
+            socket.emit("register", user.id);
 
-        setUsername("");
-        setPassword("");
-        navigate('/main')
-        }catch{
+            setUsername("");
+            setPassword("");
+            navigate('/main')
+        } catch {
             console.log("wrong username or password");
             setError("Wrong Username or Password");
         }
-       
+
     }
 
     return (
-        
-            <>
-            
-            
+
+        <>
+
+
             <div className="authcontainer">
-                
+
                 <div className="title">Login</div>
-                
+
                 <form onSubmit={handleSubmit}>
-                    
+
                     <div className="inputs">
                         <p className='error-msg'>{error}</p>
                         <div className="input">
@@ -67,7 +71,7 @@ export default function LoginPage({current}) {
                 <div className="signup-prompt"> <span id='signup-prompt-text'>Dont have an account?</span> <button onClick={current} className="signup-button">Signup</button></div>
             </div>
 
-            </>
+        </>
 
     );
 }

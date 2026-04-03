@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { socket } from "../socket";
 
 const MainContext = createContext();
 
@@ -50,6 +51,8 @@ export function MainProvider({ children }) {
                 {},
                 { withCredentials: true }
             );
+             localStorage.clear();
+            socket.disconnect(); 
             navigate("/");
         } catch (error) {
             console.log(error);

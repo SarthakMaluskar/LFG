@@ -131,7 +131,7 @@ function MainPage() {
 
                                 <h2>{post.title}</h2>
                                 <p>{post.description}</p>
-                                <p>{post.author?.username}</p>
+                                <p onClick={()=>navigate(`/users/${post.author._id}`)}>{post.author?.username}</p>
 
                             </div>
 

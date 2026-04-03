@@ -31,7 +31,7 @@ const userId = user?.id;
 console.log(userId);
 
   const [users, setUsers] = useState([]);   // store data from backend
-
+  const [isConnected, setIsConnected] = useState(false);
   const fetchAPI = async () => {
     const res = await axios.get("http://localhost:5000/api");
     console.log(res.data.users);
@@ -43,16 +43,22 @@ console.log(userId);
   }, []);
 
   useEffect(() => {
-          
-          socket.connect();
-  
-          // ✅ register user
-          socket.emit("register", userId);
-  
-          return () => {
-              socket.disconnect();
-          };
-      }, [userId]);
+
+    socket.connect();
+
+    socket.on("connect", () => {
+        console.log("Connected:", socket.id);
+
+        // ✅ NOW it's safe
+        socket.emit("register", userId);
+    });
+
+    return () => {
+        socket.off("connect"); // cleanup
+        socket.disconnect();
+    };
+
+}, [userId]);
 
   return (
     <div>
